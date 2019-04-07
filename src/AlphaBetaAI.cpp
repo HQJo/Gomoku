@@ -1,23 +1,91 @@
 //
-// Created by Kiyoshi on 2019-04-01.
+// Created by Kiyoshi on 2019-04-07.
 //
 
-#ifndef GOMOKU_SEARCH_H
-#define GOMOKU_SEARCH_H
+#include "AlphaBetaAI.h"
+#include "horist.h"
 
-#include <utility>
-#include <limits>
-#include <functional>
-#include "gomoku.h"
+AlphaBetaAI::AlphaBetaAI(const int _max_depth) : max_depth(_max_depth) {
+    init();
+}
 
-const int MAX_DEPTH = 4;
+void AlphaBetaAI::init() {
+    init_horist(horist);
+}
 
-using pos_type = std::pair<int, int>;
-using search_res = std::pair<pos_type, float>;
-using update_pos_func = std::function<void(int &, int &)>;
+search_res
+AlphaBetaAI::search(BOARD board, const int depth, float alpha, float beta, const bool is_black, uint32_t horist_val) {
+    float score;
+    if (depth > max_depth) {
+        score = evaluate(board, is_black, horist_val);
+        return std::make_pair(std::make_pair(-1, -1), score);
+    }
+    pos_type opt_move;
 
-float
-direction_evaluate(BOARD board, const int i, const int j, const update_pos_func &next, const update_pos_func &pre) {
+    update_pos_func directions[4]{
+            [](int &x, int &y) { ++x; },
+            [](int &x, int &y) { ++y; },
+            [](int &x, int &y) { --x; },
+            [](int &x, int &y) { --y; }
+    };
+    int d = 0;
+
+    heuristic_gen(board, is_black, horist_val);
+    while (!heuristic_heap.empty()) {
+        heuristic_score p = heuristic_heap.top();
+        heuristic_heap.pop();
+
+        pos_type pos = p.first;
+        int x = pos.first, y = pos.second;
+        if (board[x][y] == BLANK) {
+            board[x][y] = is_black ? BLACK : WHITE;
+            horist_val ^= horist[x][y][board[x][y] - 1];
+
+            search_res res = search(board, depth + 1, -beta, -alpha, !is_black, horist_val);
+            score = -res.second;
+            if (score > alpha) {
+                opt_move = std::make_pair(x, y);
+                if (score >= beta) {
+                    board[x][y] = BLANK;
+                    return std::make_pair(opt_move, beta);
+                }
+                alpha = score;
+            }
+            board[x][y] = BLANK;
+            horist_val ^= horist[x][y][board[x][y] - 1];
+        }
+    }
+
+/*    int x = (game_size - 1) / 2, y = (game_size - 1) / 2;
+    while (x >= 0 && x < game_size && y >= 0 && y < game_size) {
+        int steps = (d / 2) + 1;
+        for (int i = 0; i < steps; ++i) {
+            if (board[x][y] == blank) {
+                board[x][y] = is_black ? black : white;
+                horist_val ^= horist[x][y][board[x][y] - 1];
+
+                search_res res = search(board, depth + 1, -beta, -alpha, !is_black, horist_val);
+                score = -res.second;
+                if (score > alpha) {
+                    opt_move = std::make_pair(x, y);
+                    if (score >= beta) {
+                        board[x][y] = blank;
+                        return std::make_pair(opt_move, beta);
+                    }
+                    alpha = score;
+                }
+                board[x][y] = blank;
+                horist_val ^= horist[x][y][board[x][y] - 1];
+            }
+            directions[d % 4](x, y);
+        }
+        ++d;
+    }*/
+    return std::make_pair(opt_move, alpha);
+}
+
+float AlphaBetaAI::direction_evaluate(BOARD board, const int i, const int j, const update_pos_func &next,
+                                      const update_pos_func &pre) {
     int i0 = i, j0 = j;
     pre(i0, j0);
     bool left_blocked = false;
@@ -63,10 +131,12 @@ direction_evaluate(BOARD board, const int i, const int j, const update_pos_func 
     }
 }
 
-
-float evaluate(BOARD board, const bool is_black = true) {
+float AlphaBetaAI::evaluate(BOARD board, const bool is_black, uint32_t horist_val) {
     float black_score = 0.0, white_score = 0.0;
     float score;
+    if (horist_map.find(horist_val) != horist_map.end()) {
+        return horist_map[horist_val];
+    }
 
     // horizontal search
     update_pos_func next = [](int &x, int &y) { ++y; };
@@ -227,49 +297,31 @@ float evaluate(BOARD board, const bool is_black = true) {
         }
     }
 
-    return is_black ? black_score - white_score : white_score - black_score;
+    float ret = is_black ? black_score - white_score : white_score - black_score;
+    horist_map[horist_val] = ret;
+    return ret;
 }
 
-search_res alpha_beta_search(BOARD board, const int depth, float alpha, float beta, const bool is_black) {
-    float score = 0.0;
-    if (depth > MAX_DEPTH) {
-        score = evaluate(board, is_black);
-        return std::make_pair(std::make_pair(-1, -1), score);
-    }
-    pos_type opt_move;
+uint32_t AlphaBetaAI::calc_horist(BOARD board) {
+    return _calc_horist(board, horist);
+}
 
-    std::function<void(int &, int &)> directions[4]{
-            [](int &x, int &y) { ++x; },
-            [](int &x, int &y) { ++y; },
-            [](int &x, int &y) { --x; },
-            [](int &x, int &y) { --y; }
-    };
-    int d = 0;
-
-    int x = (GAME_SIZE - 1) / 2, y = (GAME_SIZE - 1) / 2;
-    while (x >= 0 && x < GAME_SIZE && y >= 0 && y < GAME_SIZE) {
-        int steps = (d / 2) + 1;
-        for (int i = 0; i < steps; ++i) {
-            if (board[x][y] == BLANK) {
-                board[x][y] = is_black? BLACK : WHITE;
-                search_res res = alpha_beta_search(board, depth + 1, -beta, -alpha, !is_black);
-                score = -res.second;
-                if (score > alpha) {
-                    opt_move = std::make_pair(x, y);
-                    if (score >= beta) {
-                        board[x][y] = BLANK;
-                        return std::make_pair(opt_move, beta);
-                    }
-                    alpha = score;
-//                    printf("Pos:(%d, %d), score: %f\n", x+1, y+1, score);
-                }
-                board[x][y] = BLANK;
+void AlphaBetaAI::heuristic_gen(BOARD board, bool is_black, uint32_t horist_val) {
+    heuristic_heap = std::priority_queue<heuristic_score , std::vector<heuristic_score >, cmp_func>(heuristic_cmp);
+    for (int i = 0; i < GAME_SIZE; ++i) {
+        for (int j = 0; j < GAME_SIZE; ++j) {
+            if (board[i][j] == BLANK) {
+                float score = heuristic_evaluate(board, i, j, is_black, 0);
+                heuristic_heap.push(std::make_pair(std::make_pair(i, j), score));
             }
-            directions[d % 4](x, y);
         }
-        ++d;
     }
-    return std::make_pair(opt_move, alpha);
 }
 
-#endif //GOMOKU_SEARCH_H
+float AlphaBetaAI::heuristic_evaluate(BOARD board, const int x, const int y, bool is_black, uint32_t horist_val) {
+    board[x][y] = is_black ? BLACK : WHITE;
+    float score_after = this->evaluate(board, is_black, horist_val ^ horist[x][y][is_black?0 : 1]);
+    board[x][y] = BLANK;
+    float score_before = this->evaluate(board, is_black, horist_val);
+    return score_after-score_before;
+}
