@@ -1,57 +1,47 @@
 #include <iostream>
 #include <chrono>
 #include <random>
-#include "horist.h"
-#include "AlphaBetaAI.h"
+#include <limits>
+#include "GomokuAI.h"
 
-using namespace std;
 using namespace std::chrono;
 
 int main() {
-    BOARD board;
-    memset(board, BLANK, sizeof(int) * GAME_SIZE * GAME_SIZE);
+    GomokuAI ai(8);
 
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(GAME_SIZE/4-2, 3 * GAME_SIZE/4+2);
 
-    float total_time = 0;
-    int TIMES = 1;
-    for (int t = 0;t < TIMES;++t) {
-        memset(board, BLANK, sizeof(int) * GAME_SIZE * GAME_SIZE);
-        int i, j;
-        for (int k = 0; k < 15; ++k) {
-            while (true) {
-                i = dis(gen);
-                j = dis(gen);
-                if (board[i][j] == BLANK) {
-                    board[i][j] = BLACK;
-                    break;
-                }
-            }
-            while (true) {
-                i = dis(gen);
-                j = dis(gen);
-                if (board[i][j] == BLANK) {
-                    board[i][j] = WHITE;
-                    break;
-                }
+    int i, j;
+    for (int k = 0; k < 15; ++k) {
+        while (true) {
+            i = dis(gen);
+            j = dis(gen);
+            if (ai.state_at_xy(i, j) == BLANK) {
+                ai.put(i, j, true);
+                break;
             }
         }
-
-        AlphaBetaAI ai(12);
-        print_board(board);
-
-        uint32_t horist_val = ai.calc_horist(board);
-        auto start_time = high_resolution_clock::now();
-        auto res = ai.search(board, 1, -numeric_limits<float>::infinity(), numeric_limits<float>::infinity(), true, horist_val);
-        printf("position:(%d, %d)\tscore: %f\n", res.first.first+1, res.first.second+1, res.second);
-        auto end_time = high_resolution_clock::now();
-
-        auto duration = duration_cast<seconds>(end_time - start_time).count();
-        cout << "Search Complete " << duration << " seconds." << endl;
-        total_time += duration;
+        while (true) {
+            i = dis(gen);
+            j = dis(gen);
+            if (ai.state_at_xy(i, j) == BLANK) {
+                ai.put(i, j, false);
+                break;
+            }
+        }
     }
-    printf("Average time: %f\n", total_time / TIMES);
+
+    ai.print_board();
+
+    auto start_time = high_resolution_clock::now();
+    auto res = ai.search(1, -std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
+    auto end_time = high_resolution_clock::now();
+    printf("Pos:(%d, %d)\tScore:%f\n", res.first.first+1, res.first.second+1, res.second);
+
+    auto duration = duration_cast<seconds>(end_time - start_time).count();
+    std::cout << "Search Complete " << duration << " seconds." << std::endl;
+
     return 0;
 }

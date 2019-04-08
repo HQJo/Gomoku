@@ -3,10 +3,9 @@
 //
 
 #include "../src/gomoku.h"
-#include "../src/AlphaBetaAI.h"
+#include "../src/GomokuAI.h"
 #include <gtest/gtest.h>
 
-AlphaBetaAI ai(4);
 
 TEST(live4, case1) {
     BOARD board;

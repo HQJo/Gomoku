@@ -7,7 +7,8 @@
 
 #include "gomoku.h"
 
-void init_horist(uint32_t horist[][GAME_SIZE][2]);
-uint32_t _calc_horist(BOARD board, uint32_t horist[][GAME_SIZE][2]);
+using horist_t = uint32_t;
+void init_horist(horist_t horist[][GAME_SIZE][2]);
+horist_t _calc_horist(BOARD board, horist_t horist[][GAME_SIZE][2]);
 
 #endif //GOMOKU_HORIST_H
