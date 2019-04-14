@@ -5,28 +5,19 @@
 #include "horist.h"
 #include <random>
 
-void init_horist(horist_t horist[][GAME_SIZE][2]) {
-    std::random_device r;
-    std::seed_seq seed{r()};
-    std::independent_bits_engine<std::mt19937, 32, horist_t> engine(seed);
+namespace GOMOKUZHQ {
+    void init_horist(horist_table_t table) {
+        std::random_device r;
+        std::seed_seq seed{r()};
+        std::independent_bits_engine<std::mt19937, 32, horist_t> engine(seed);
 
-    for (int i = 0;i < GAME_SIZE;++i) {
-        for (int j = 0;j < GAME_SIZE;++j) {
-            for (int k = 0;k < 2;++k) {
-                horist[i][j][k] = engine();
+        auto size = table[0].size();
+        for (auto k = 0; k < 2; ++k) {
+            for (auto i = 0; i < size; ++i) {
+                for (auto j = 0; j < size; ++j) {
+                    table[k][i][j] = engine();
+                }
             }
         }
     }
-}
-
-horist_t _calc_horist(BOARD board, horist_t horist[][GAME_SIZE][2]) {
-    horist_t h = 0;
-    for (int i = 0;i < GAME_SIZE;++i) {
-        for (int j = 0;j < GAME_SIZE;++j) {
-            if (board[i][j] != BLANK) {
-                h ^= horist[i][j][board[i][j]-1];
-            }
-        }
-    }
-    return h;
 }

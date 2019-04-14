@@ -4,13 +4,15 @@
 
 #ifndef GOMOKU_GOMOKU_H
 #define GOMOKU_GOMOKU_H
+
 #include <cstdio>
 #include <functional>
 
-const int GAME_SIZE = 15;
-const int BLANK = 0, BLACK = 1, WHITE = 2;
-using BOARD = int[GAME_SIZE][GAME_SIZE];
+namespace GOMOKUZHQ {
+    const int BLANK = 0, BLACK = 1, WHITE = 2;
+    using board_t = std::vector<std::vector<int>>;
 
-void print_board(BOARD board);
+    void print_board(const board_t &board);
+}
 
 #endif //GOMOKU_GOMOKU_H

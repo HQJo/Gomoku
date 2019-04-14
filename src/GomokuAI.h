@@ -9,50 +9,43 @@
 #include <queue>
 #include "gomoku.h"
 #include "horist.h"
+#include "GameBoard.h"
 
-using pos_t = std::pair<int, int>;
-using update_pos_fun_t = std::function<void(int &, int &)>;
 
-using evaluate_t = std::pair<float, float>;
-using search_res_t = std::pair<pos_t, float>;
-using candidate_t = std::pair<pos_t, float>;
+namespace GOMOKUZHQ {
+    using pos_t = std::pair<int, int>;
+    using update_pos_fun_t = std::function<void(int &, int &)>;
 
-using cmp_func_t = std::function<bool(const candidate_t &, const candidate_t &)>;
-using candidate_heap_t = std::priority_queue<candidate_t, std::vector<candidate_t>, cmp_func_t>;
+    using evaluate_t = std::pair<float, float>;
+    using search_res_t = std::pair<pos_t, float>;
+    using candidate_t = std::pair<pos_t, float>;
 
-class GomokuAI {
-public:
-    GomokuAI(int _max_depth, bool is_black=true);
+    using cmp_func_t = std::function<bool(const candidate_t &, const candidate_t &)>;
+    using candidate_heap_t = std::priority_queue<candidate_t, std::vector<candidate_t>, cmp_func_t>;
 
-    void init();
+    class GomokuAI {
+    public:
+        explicit GomokuAI(int _max_depth);
 
-    float direction_evaluate(int x, int y, update_pos_fun_t &next, update_pos_fun_t &pre);
+        void init();
 
-    float state_evaluate();
+        search_res_t search(GameBoard &game_board, int depth, float alpha, float beta);
 
-    search_res_t search(int depth, float alpha, float beta);
+        float state_evaluate(GameBoard &game_board);
 
-    void generate_candidates();
+        float pos_evaluate(GameBoard &board, int x, int y);
 
-    float pos_evaluate(int x, int y);
+        float direction_evaluate(GameBoard &game_board, int x, int y, update_pos_fun_t &next, update_pos_fun_t &pre);
 
-    void put(int x, int y, bool _is_black);
+        void generate_candidates(GameBoard &game_board);
 
-    void unput(int x, int y);
+    private:
+        int max_depth;
 
-    int state_at_xy(int x, int y);
-
-    void print_board();
-private:
-    BOARD board;
-    int max_depth;
-
-    bool is_black;
-    horist_t horist_val{0};
-    horist_t horist_tab[GAME_SIZE][GAME_SIZE][2];
-    std::map<horist_t, float> horist_map;
-    candidate_heap_t candidate_heap;
-};
+        std::map<horist_t, float> horist_map;
+        candidate_heap_t candidate_heap;
+    };
+}
 
 
 #endif //GOMOKU_GOMOKUAI_H

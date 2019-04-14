@@ -7,8 +7,11 @@
 
 #include "gomoku.h"
 
-using horist_t = uint32_t;
-void init_horist(horist_t horist[][GAME_SIZE][2]);
-horist_t _calc_horist(BOARD board, horist_t horist[][GAME_SIZE][2]);
+namespace GOMOKUZHQ {
+    using horist_t = uint32_t;
+    using horist_table_t = std::vector<std::vector<horist_t>>[2];
+
+    void init_horist(horist_table_t table);
+}
 
 #endif //GOMOKU_HORIST_H
