@@ -2,6 +2,7 @@
 // Created by Kiyoshi on 2019-04-08.
 //
 
+#include <cmath>
 #include "GomokuAI.h"
 
 namespace GOMOKUZHQ {
@@ -24,7 +25,7 @@ namespace GOMOKUZHQ {
 
         float score;
         if (horist_map.find(horist_val) != horist_map.end()) {
-            return is_black ? -horist_map[horist_val] : horist_map[horist_val];
+            return is_black ? horist_map[horist_val] : -horist_map[horist_val];
         }
 
         float black_score = 0.0, white_score = 0.0;
@@ -193,7 +194,7 @@ namespace GOMOKUZHQ {
         }
 
         float ret = is_black ? black_score - white_score : white_score - black_score;
-        horist_map[horist_val] = is_black ? -ret : ret;
+        horist_map[horist_val] = is_black ? ret : -ret;
         return ret;
     }
 
@@ -288,9 +289,11 @@ namespace GOMOKUZHQ {
 
         if (left_blocked && right_blocked)
             return 0.0;
+
+        auto pos_score = static_cast<float>(-(std::pow(x - size / 2, 2) + std::pow(y - size / 2, 2)) / 100);
         switch (self) {
             case 1:
-                return 0;
+                return 0 + pos_score;
             case 2:
                 return blank == 234 ? 10 : 100;
             case 3:

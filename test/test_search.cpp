@@ -20,7 +20,7 @@ TEST(search, c1) {
     std::uniform_int_distribution<> dis(size / 4 - 2, 3 * size / 4 + 2);
 
     float total_time = 0;
-    int TIMES = 50;
+    const int TIMES = 50;
     for (int t = 0;t < TIMES;++t) {
         GameBoard game_board(size);
         memset(board, 0, size * size * sizeof(int));
@@ -46,7 +46,7 @@ TEST(search, c1) {
             }
         }
 
-        GomokuAI ai(16);
+        GomokuAI ai(12);
         game_board.print();
         printf("Score: %f\n", ai.state_evaluate(game_board));
 
@@ -55,11 +55,11 @@ TEST(search, c1) {
         printf("position:(%d, %d)\tscore: %f\n", res.first.first+1, res.first.second+1, res.second);
         auto end_time = high_resolution_clock::now();
 
-        auto duration = duration_cast<seconds>(end_time - start_time).count();
-        cout << "Search Complete " << duration << " seconds." << endl;
+        auto duration = duration_cast<milliseconds>(end_time - start_time).count();
+        cout << "Search Complete " << duration << " millseconds." << endl;
         total_time += duration;
     }
-    printf("Average time: %f\n", total_time / TIMES);
+    printf("Average time: %f millseconds\n", total_time / TIMES);
 }
 
 GTEST_API_ int main(int argc, char **argv) {
