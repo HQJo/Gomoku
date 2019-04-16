@@ -22,7 +22,7 @@ namespace GOMOKUZHQ {
         m_horist_val ^= horist_tab[m_board[x][y] - 1][x][y];
     }
 
-    void GameBoard::unput(const int x, const int y) {
+    void GameBoard::unput(int x, int y) {
         m_horist_val ^= horist_tab[m_board[x][y] - 1][x][y];
         m_board[x][y] = BLANK;
     }

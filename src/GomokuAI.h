@@ -14,7 +14,6 @@
 
 namespace GOMOKUZHQ {
     using pos_t = std::pair<int, int>;
-    using update_pos_fun_t = std::function<void(int &, int &)>;
 
     using evaluate_t = std::pair<float, float>;
     using search_res_t = std::pair<pos_t, float>;
@@ -36,6 +35,7 @@ namespace GOMOKUZHQ {
         float pos_evaluate(GameBoard &board, int x, int y);
 
         float direction_evaluate(GameBoard &game_board, int x, int y, update_pos_fun_t &next, update_pos_fun_t &pre);
+
 
         void generate_candidates(GameBoard &game_board);
 

@@ -358,4 +358,5 @@ namespace GOMOKUZHQ {
         float score_before = state_evaluate(board);
         return score_after - score_before;
     }
+
 }
