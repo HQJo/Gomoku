@@ -41,6 +41,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i, j, next, pre);
+                if (score >= 100000) {
+                    horist_map[horist_val] = is_black ? score : -score;
+                    if (is_black)
+                        return (board[i][j] == BLACK) ? score : -score;
+                    else
+                        return (board[i][j] == BLACK) ? -score : score;
+                }
                 if (board[i][j] == BLACK)
                     black_score += score;
                 else
@@ -69,6 +76,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i, j, next, pre);
+                if (score >= 100000) {
+                    horist_map[horist_val] = is_black ? score : -score;
+                    if (is_black)
+                        return (board[i][j] == BLACK) ? score : -score;
+                    else
+                        return (board[i][j] == BLACK) ? -score : score;
+                }
                 if (board[i][j] == BLACK)
                     black_score += score;
                 else
@@ -99,6 +113,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
+                if (score >= 100000) {
+                    horist_map[horist_val] = is_black ? score : -score;
+                    if (is_black)
+                        return (board[i][j] == BLACK) ? score : -score;
+                    else
+                        return (board[i][j] == BLACK) ? -score : score;
+                }
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
@@ -124,6 +145,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
+                if (score >= 100000) {
+                    horist_map[horist_val] = is_black ? score : -score;
+                    if (is_black)
+                        return (board[i][j] == BLACK) ? score : -score;
+                    else
+                        return (board[i][j] == BLACK) ? -score : score;
+                }
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
@@ -153,6 +181,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
+                if (score >= 100000) {
+                    horist_map[horist_val] = is_black ? score : -score;
+                    if (is_black)
+                        return (board[i][j] == BLACK) ? score : -score;
+                    else
+                        return (board[i][j] == BLACK) ? -score : score;
+                }
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
@@ -178,6 +213,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
+                if (score >= 100000) {
+                    horist_map[horist_val] = is_black ? score : -score;
+                    if (is_black)
+                        return (board[i][j] == BLACK) ? score : -score;
+                    else
+                        return (board[i][j] == BLACK) ? -score : score;
+                }
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
@@ -218,20 +260,20 @@ namespace GOMOKUZHQ {
             int x = pos.first, y = pos.second;
             if (board[x][y] == BLANK) {
                 game_board.put(x, y, is_black ? BLACK : WHITE);
+                is_black = !is_black;
+
+                search_res_t res = search(game_board, depth + 1, -beta, -alpha);
+                score = -res.second;
 
                 is_black = !is_black;
-                search_res_t res = search(game_board, depth + 1, -beta, -alpha);
-                is_black = !is_black;
-                score = -res.second;
+                game_board.unput(x, y);
                 if (score > alpha) {
                     opt_move = std::make_pair(x, y);
                     if (score >= beta) {
-                        board[x][y] = BLANK;
                         return std::make_pair(opt_move, beta);
                     }
                     alpha = score;
                 }
-                game_board.unput(x, y);
             }
         }
 
