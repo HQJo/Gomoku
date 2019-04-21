@@ -62,6 +62,42 @@ TEST(search, c1) {
     printf("Average time: %f millseconds\n", total_time / TIMES);
 }
 
+TEST(defend, case1) {
+    GameBoard board{15};
+    board.put(7, 7, WHITE);
+    board.put(7, 8, WHITE);
+    board.put(8, 8, WHITE);
+    board.put(8, 9, WHITE);
+    board.put(9, 8, WHITE);
+    board.put(8, 7, BLACK);
+    board.put(9, 7, BLACK);
+    board.put(9, 9, BLACK);
+    board.put(9, 10, BLACK);
+    board.print();
+    GomokuAI ai{12};
+    auto res = ai.search(board, 1, -numeric_limits<float>::infinity(), numeric_limits<float>::infinity());
+    printf("Search res: (%d, %d)\n", res.first.first + 1, res.first.second + 1);
+}
+
+TEST(defend, case2) {
+    GameBoard board{15};
+    board.put(7, 7, WHITE);
+    board.put(7, 8, WHITE);
+    board.put(8, 8, WHITE);
+    board.put(9, 8, WHITE);
+    board.put(9, 9, WHITE);
+
+    board.put(8, 7, BLACK);
+    board.put(8, 9, BLACK);
+    board.put(7, 9, BLACK);
+    board.put(10, 8, BLACK);
+    board.print();
+
+    GomokuAI ai{12};
+    auto res = ai.search(board, 1, -numeric_limits<float>::infinity(), numeric_limits<float>::infinity());
+    printf("Search res: (%d, %d)\n", res.first.first + 1, res.first.second + 1);
+}
+
 GTEST_API_ int main(int argc, char **argv) {
     testing::InitGoogleTest();
     return RUN_ALL_TESTS();

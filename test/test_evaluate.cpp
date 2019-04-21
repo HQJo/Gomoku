@@ -209,6 +209,13 @@ TEST(live2, case2) {
     EXPECT_EQ(ai.state_evaluate(board), 100);
 }
 
+TEST(oppo, case1) {
+    GameBoard board(size);
+    for (int i = 7; i < 12; ++i)
+        board.put(5, i, WHITE);
+    EXPECT_EQ(ai.state_evaluate(board), -100000);
+}
+
 GTEST_API_ int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
 

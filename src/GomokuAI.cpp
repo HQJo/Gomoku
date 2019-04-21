@@ -41,13 +41,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i, j, next, pre);
-                if (score >= 100000) {
+/*                if (score >= 100000) {
                     horist_map[horist_val] = is_black ? score : -score;
                     if (is_black)
                         return (board[i][j] == BLACK) ? score : -score;
                     else
                         return (board[i][j] == BLACK) ? -score : score;
-                }
+                }*/
                 if (board[i][j] == BLACK)
                     black_score += score;
                 else
@@ -76,13 +76,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i, j, next, pre);
-                if (score >= 100000) {
+/*                if (score >= 100000) {
                     horist_map[horist_val] = is_black ? score : -score;
                     if (is_black)
                         return (board[i][j] == BLACK) ? score : -score;
                     else
                         return (board[i][j] == BLACK) ? -score : score;
-                }
+                }*/
                 if (board[i][j] == BLACK)
                     black_score += score;
                 else
@@ -113,13 +113,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
-                if (score >= 100000) {
+/*                if (score >= 100000) {
                     horist_map[horist_val] = is_black ? score : -score;
                     if (is_black)
                         return (board[i][j] == BLACK) ? score : -score;
                     else
                         return (board[i][j] == BLACK) ? -score : score;
-                }
+                }*/
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
@@ -145,13 +145,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
-                if (score >= 100000) {
+/*                if (score >= 100000) {
                     horist_map[horist_val] = is_black ? score : -score;
                     if (is_black)
                         return (board[i][j] == BLACK) ? score : -score;
                     else
                         return (board[i][j] == BLACK) ? -score : score;
-                }
+                }*/
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
@@ -181,13 +181,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
-                if (score >= 100000) {
+/*                if (score >= 100000) {
                     horist_map[horist_val] = is_black ? score : -score;
                     if (is_black)
                         return (board[i][j] == BLACK) ? score : -score;
                     else
                         return (board[i][j] == BLACK) ? -score : score;
-                }
+                }*/
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
@@ -213,13 +213,13 @@ namespace GOMOKUZHQ {
                     break;
 
                 score = direction_evaluate(game_board, i0, j0, next, pre);
-                if (score >= 100000) {
-                    horist_map[horist_val] = is_black ? score : -score;
-                    if (is_black)
-                        return (board[i][j] == BLACK) ? score : -score;
-                    else
-                        return (board[i][j] == BLACK) ? -score : score;
-                }
+//                if (score >= 100000) {
+//                    horist_map[horist_val] = is_black ? score : -score;
+//                    if (is_black)
+//                        return (board[i][j] == BLACK) ? score : -score;
+//                    else
+//                        return (board[i][j] == BLACK) ? -score : score;
+//                }
                 if (board[i0][j0] == BLACK)
                     black_score += score;
                 else
